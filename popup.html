@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 340px;
+      min-height: 200px;
+      max-height: 560px;
+      background: #0f0f13;
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      padding: 14px 16px 10px;
+      border-bottom: 1px solid #1e1e2e;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.3px;
+    }
+
+    .title span {
+      color: #7c6af7;
+    }
+
+    .stats {
+      font-size: 11px;
+      color: #555570;
+    }
+
+    .btn-clean-all {
+      width: calc(100% - 32px);
+      margin: 12px 16px;
+      padding: 10px;
+      background: linear-gradient(135deg, #7c6af7, #a855f7);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: opacity 0.15s;
+    }
+
+    .btn-clean-all:hover { opacity: 0.85; }
+    .btn-clean-all:active { opacity: 0.7; }
+
+    .btn-clean-all svg { flex-shrink: 0; }
+
+    .btn-jarvis {
+      width: calc(100% - 32px);
+      margin: 0 16px 12px;
+      padding: 10px;
+      background: linear-gradient(135deg, #0a0a0f, #111120);
+      border: 1px solid #2a2a50;
+      border-radius: 8px;
+      color: #4af;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-jarvis::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #0044aa22, #00aaff11);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .btn-jarvis:hover {
+      border-color: #4af;
+      color: #7df;
+      box-shadow: 0 0 12px #00aaff33;
+    }
+
+    .btn-jarvis:hover::before { opacity: 1; }
+    .btn-jarvis:active { transform: scale(0.98); }
+
+    .btn-jarvis.killing {
+      border-color: #f44;
+      color: #f44;
+      box-shadow: 0 0 12px #ff000033;
+      animation: pulse 0.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { box-shadow: 0 0 6px #ff000022; }
+      to { box-shadow: 0 0 18px #ff000055; }
+    }
+
+    .section-title {
+      padding: 6px 16px 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #444460;
+    }
+
+    .list {
+      overflow-y: auto;
+      flex: 1;
+      padding-bottom: 8px;
+    }
+
+    .list::-webkit-scrollbar { width: 4px; }
+    .list::-webkit-scrollbar-track { background: transparent; }
+    .list::-webkit-scrollbar-thumb { background: #2a2a40; border-radius: 4px; }
+
+    .domain-group {
+      margin: 3px 16px;
+      background: #16161f;
+      border: 1px solid #1e1e2e;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .domain-header {
+      display: flex;
+      align-items: center;
+      padding: 8px 10px;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .domain-header:hover { background: #1a1a26; }
+
+    .favicon {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      background: #2a2a40;
+    }
+
+    .domain-name {
+      flex: 1;
+      font-weight: 600;
+      color: #c4c4e0;
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .badge {
+      font-size: 10px;
+      font-weight: 700;
+      background: #2a2a40;
+      color: #7c6af7;
+      padding: 2px 6px;
+      border-radius: 10px;
+    }
+
+    .badge.inactive {
+      color: #f59e0b;
+    }
+
+    .badge.dup {
+      color: #ef4444;
+    }
+
+    .btn-close-domain {
+      background: #2a2a40;
+      border: none;
+      color: #888;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+
+    .btn-close-domain:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .tab-list {
+      border-top: 1px solid #1e1e2e;
+    }
+
+    .tab-item {
+      display: flex;
+      align-items: center;
+      padding: 6px 10px 6px 30px;
+      gap: 7px;
+      border-bottom: 1px solid #12121a;
+    }
+
+    .tab-item:last-child { border-bottom: none; }
+
+    .tab-title {
+      flex: 1;
+      color: #777790;
+      font-size: 11px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tag {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .tag.dup { background: #3a1a1a; color: #ef4444; }
+    .tag.inactive { background: #2a2010; color: #f59e0b; }
+    .tag.active { background: #1a2a1a; color: #4ade80; }
+
+    .btn-close-tab {
+      background: none;
+      border: none;
+      color: #444;
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+      padding: 0 2px;
+      transition: color 0.1s;
+      flex-shrink: 0;
+    }
+
+    .btn-close-tab:hover { color: #ef4444; }
+
+    .empty {
+      text-align: center;
+      padding: 30px 16px;
+      color: #444460;
+      font-size: 12px;
+    }
+
+    .empty .icon { font-size: 28px; margin-bottom: 8px; }
+
+    .footer {
+      padding: 8px 16px;
+      border-top: 1px solid #1e1e2e;
+      font-size: 10px;
+      color: #333350;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title">Clean<span>Tabs</span></div>
+    <div class="stats" id="stats">Chargement...</div>
+  </div>
+
+  <button class="btn-clean-all" id="cleanAll">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/>
+    </svg>
+    Tout nettoyer
+  </button>
+
+  <button class="btn-jarvis" id="jarvisMode">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+    </svg>
+    Jarvis Mode
+  </button>
+
+  <div class="list" id="list">
+    <div class="empty"><div class="icon">⏳</div>Analyse en cours...</div>
+  </div>
+
+  <div class="footer">Ctrl+Shift+X pour nettoyer sans ouvrir le popup</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
